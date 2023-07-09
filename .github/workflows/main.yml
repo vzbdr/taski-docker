@@ -8,19 +8,15 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    # В блоке services описываются сервисы по аналогии с docker-compose.yml
     services:
       postgres:
         image: postgres:13.10
-        # Тут мы указываем доступы в открытом виде
-        # так как база будет работать только во время прогона тестов
         env:
           POSTGRES_USER: django_user
           POSTGRES_PASSWORD: django_password
           POSTGRES_DB: django_db
         ports:
           - 5432:5432
-        # Эта конструкция описывает проверку готовности сервиса postgres
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - uses: actions/checkout@v3
@@ -85,7 +81,7 @@ jobs:
           # Для каждого пересобранного образа 
           # устанавливаем тег latest, чтобы потом
           # на сервере и в docker-compose.yml не указывать версию
-          tags: kovdmit/taski_backend:latest 
+          tags: vzbdr/taski_backend:latest 
 
   frontend_tests:
     runs-on: ubuntu-latest
@@ -129,7 +125,7 @@ jobs:
         with:
           context: ./frontend/
           push: true
-          tags: kovdmit/taski_frontend:latest
+          tags: vzbdr/taski_frontend:latest
   build_gateway_and_push_to_docker_hub:
     name: Push gateway Docker image to DockerHub
     runs-on: ubuntu-latest
@@ -149,7 +145,7 @@ jobs:
           context: ./gateway/
           push: true
           # Тут вместо username должен быть ваш логин на DockerHub
-          tags: kovdmit/taski_gateway:latest 
+          tags: vzbdr/taski_gateway:latest 
   deploy:
     runs-on: ubuntu-latest
     needs: 
